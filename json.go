@@ -23,12 +23,10 @@ func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	dat, err := json.Marshal(payload)
 	if err != nil {
-		http.Error(w, fmt.Sprintf("Error marshalling JSON: %v", err), http.StatusInternalServerError)
+		log.Printf("Error marshalling JSON: %s", err)
+		w.WriteHeader(500)
 		return
 	}
 	w.WriteHeader(code)
-	if _, err := w.Write(dat); err != nil {
-		// Log the error if writing the response fails
-		fmt.Printf("Error writing response: %v\n", err)
-	}
+	w.Write(dat)
 }
